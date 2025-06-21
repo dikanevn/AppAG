@@ -11,10 +11,10 @@
     "test": "jest",
     "web": "npx expo start --web",
     "build": "npx expo export --platform web --output-dir dist",
-    "fix-paths": "sed -i 's|src=\"/_expo/|src=\"./_expo/|g' dist/index.html",
+    "fix-paths": "sed -i 's|src=\"/_expo/|src=\"./expo/|g' dist/index.html && mv dist/_expo dist/expo",
     "copy-nojekyll": "cp .nojekyll dist/",
     "predeploy": "npm run build && npm run fix-paths && npm run copy-nojekyll",
-    "deploy": "gh-pages -d dist"
+    "deploy": "rm -rf .gh-pages && gh-pages -d dist"
   },
   "dependencies": {
     "@expo/metro-config": "^0.20.15",
