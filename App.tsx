@@ -5,104 +5,29 @@
  * @format
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-
-// Типы для Telegram Web App
-declare global {
-  interface Window {
-    Telegram?: {
-      WebApp: {
-        ready: () => void;
-        close: () => void;
-        expand: () => void;
-        MainButton: {
-          text: string;
-          show: () => void;
-          hide: () => void;
-          onClick: (callback: () => void) => void;
-        };
-        initDataUnsafe: {
-          user?: {
-            id: number;
-            first_name: string;
-            last_name?: string;
-            username?: string;
-          };
-        };
-        HapticFeedback: {
-          impactOccurred: (style: 'light' | 'medium' | 'heavy') => void;
-        };
-      };
-    };
-  }
-}
 
 export default function App() {
   const [count, setCount] = useState(0);
-  const [user, setUser] = useState<any>(null);
-  const [isTelegram, setIsTelegram] = useState(false);
-
-  useEffect(() => {
-    // Проверяем, запущено ли в Telegram
-    if (window.Telegram?.WebApp) {
-      setIsTelegram(true);
-      const tg = window.Telegram.WebApp;
-      
-      // Инициализируем Telegram Web App
-      tg.ready();
-      tg.expand();
-      
-      // Получаем данные пользователя
-      if (tg.initDataUnsafe.user) {
-        setUser(tg.initDataUnsafe.user);
-      }
-
-      // Настраиваем главную кнопку
-      tg.MainButton.text = "Сбросить счётчик";
-      tg.MainButton.show();
-      tg.MainButton.onClick(() => {
-        setCount(0);
-        tg.HapticFeedback?.impactOccurred('medium');
-      });
-    }
-  }, []);
 
   const increment = () => {
     setCount(prev => prev + 1);
-    if (isTelegram && window.Telegram?.WebApp) {
-      // Тактильная обратная связь в Telegram
-      window.Telegram.WebApp.HapticFeedback?.impactOccurred('light');
-    }
   };
 
   const decrement = () => {
     setCount(prev => Math.max(0, prev - 1));
-    if (isTelegram && window.Telegram?.WebApp) {
-      window.Telegram.WebApp.HapticFeedback?.impactOccurred('light');
-    }
   };
 
   const reset = () => {
     setCount(0);
-    if (isTelegram && window.Telegram?.WebApp) {
-      window.Telegram.WebApp.HapticFeedback?.impactOccurred('heavy');
-    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        {isTelegram ? '🤖 Telegram Counter' : '🔢 Web Counter'}
+        🔢 Счётчик
       </Text>
-      
-      {user && (
-        <View style={styles.userInfo}>
-          <Text style={styles.userText}>
-            Привет, {user.first_name}! 👋
-          </Text>
-        </View>
-      )}
       
       <View style={styles.counterContainer}>
         <Text style={styles.counterText}>{count}</Text>
@@ -130,16 +55,6 @@ export default function App() {
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
-      
-      <Text style={styles.status}>
-        Платформа: {isTelegram ? 'Telegram Mini App' : 'Веб-браузер'}
-      </Text>
-      
-      {isTelegram && (
-        <Text style={styles.hint}>
-          💡 Используйте кнопку внизу для сброса
-        </Text>
-      )}
     </View>
   );
 }
@@ -156,20 +71,8 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: '#2c3e50',
-    marginBottom: 20,
+    marginBottom: 40,
     textAlign: 'center',
-  },
-  userInfo: {
-    backgroundColor: '#e3f2fd',
-    padding: 12,
-    borderRadius: 20,
-    marginBottom: 30,
-    alignItems: 'center',
-  },
-  userText: {
-    fontSize: 16,
-    color: '#1976d2',
-    fontWeight: '600',
   },
   counterContainer: {
     backgroundColor: '#ffffff',
@@ -222,16 +125,5 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     color: 'white',
-  },
-  status: {
-    fontSize: 14,
-    color: '#7f8c8d',
-    marginBottom: 10,
-  },
-  hint: {
-    fontSize: 12,
-    color: '#95a5a6',
-    textAlign: 'center',
-    fontStyle: 'italic',
   },
 });
