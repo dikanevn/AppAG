@@ -7,9 +7,12 @@
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { TonConnectButton, useTonWallet, useTonAddress } from '@tonconnect/ui-react';
 
 export default function App() {
   const [count, setCount] = useState(0);
+  const wallet = useTonWallet();
+  const address = useTonAddress();
 
   const increment = () => {
     setCount(prev => prev + 1);
@@ -23,12 +26,63 @@ export default function App() {
     setCount(0);
   };
 
+  const formatAddress = (addr: string) => {
+    if (!addr) return '';
+    return `${addr.slice(0, 6)}...${addr.slice(-6)}`;
+  };
+
+  // Отладочная информация
+  console.log('Wallet:', wallet);
+  console.log('Address:', address);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        🔢 Счётчик
+        🔢 TON Счётчик версия 3
       </Text>
+
+      {/* TON Wallet Section */}
+      <View style={styles.walletSection}>
+        <View style={styles.tonConnectContainer}>
+          <TonConnectButton />
+        </View>
+        
+        {/* Показываем статус подключения */}
+        {wallet && (
+          <View style={styles.walletInfo}>
+            <Text style={styles.connectedText}>
+              ✅ Кошелёк подключен!
+            </Text>
+            <Text style={styles.walletName}>
+              {wallet.device?.appName || 'TON Wallet'}
+            </Text>
+          </View>
+        )}
+
+        {/* Показываем адрес если есть */}
+        {address && (
+          <View style={styles.addressInfo}>
+            <Text style={styles.walletText}>
+              💎 {formatAddress(address)}
+            </Text>
+            <Text style={styles.fullAddress}>
+              {address}
+            </Text>
+          </View>
+        )}
+
+        {/* Отладочная информация */}
+        <View style={styles.debugInfo}>
+          <Text style={styles.debugText}>
+            Wallet: {wallet ? 'Connected' : 'Not connected'}
+          </Text>
+          <Text style={styles.debugText}>
+            Address: {address ? 'Available' : 'Not available'}
+          </Text>
+        </View>
+      </View>
       
+      {/* Counter Section */}
       <View style={styles.counterContainer}>
         <Text style={styles.counterText}>{count}</Text>
       </View>
@@ -71,8 +125,62 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: '#2c3e50',
-    marginBottom: 40,
+    marginBottom: 30,
     textAlign: 'center',
+  },
+  walletSection: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  tonConnectContainer: {
+    marginBottom: 15,
+  },
+  walletInfo: {
+    backgroundColor: '#e8f5e8',
+    padding: 12,
+    borderRadius: 15,
+    alignItems: 'center',
+    minWidth: 200,
+    marginBottom: 10,
+  },
+  addressInfo: {
+    backgroundColor: '#e8f5e8',
+    padding: 12,
+    borderRadius: 15,
+    alignItems: 'center',
+    minWidth: 200,
+    marginBottom: 10,
+  },
+  walletText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2d5a2d',
+    marginBottom: 4,
+  },
+  walletName: {
+    fontSize: 14,
+    color: '#5a7c5a',
+  },
+  fullAddress: {
+    fontSize: 10,
+    color: '#5a7c5a',
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  debugInfo: {
+    backgroundColor: '#fff3cd',
+    padding: 8,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  debugText: {
+    fontSize: 12,
+    color: '#856404',
+  },
+  connectedText: {
+    fontSize: 16,
+    color: '#27ae60',
+    fontWeight: 'bold',
   },
   counterContainer: {
     backgroundColor: '#ffffff',
@@ -98,7 +206,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     width: '100%',
     maxWidth: 300,
-    marginBottom: 30,
+    marginBottom: 20,
   },
   button: {
     width: 70,

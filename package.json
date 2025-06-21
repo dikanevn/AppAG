@@ -13,14 +13,16 @@
     "build": "npx expo export --platform web --output-dir dist",
     "fix-paths": "sed -i 's|src=\"/_expo/|src=\"./expo/|g' dist/index.html && mv dist/_expo dist/expo",
     "add-telegram": "sed -i '/<\\/head>/i\\  <script src=\"https://telegram.org/js/telegram-web-app.js\"></script>' dist/index.html",
+    "copy-manifest": "cp public/tonconnect-manifest.json dist/",
     "copy-nojekyll": "cp .nojekyll dist/",
-    "predeploy": "npm run build && npm run fix-paths && npm run add-telegram && npm run copy-nojekyll",
+    "predeploy": "npm run build && npm run fix-paths && npm run add-telegram && npm run copy-manifest && npm run copy-nojekyll",
     "deploy": "rm -rf .gh-pages && gh-pages -d dist"
   },
   "dependencies": {
     "@expo/metro-config": "^0.20.15",
     "@expo/metro-runtime": "~5.0.4",
     "@react-native/new-app-screen": "0.80.0",
+    "@tonconnect/ui-react": "^2.0.11",
     "expo": "^53.0.12",
     "react": "19.1.0",
     "react-dom": "19.1.0",
