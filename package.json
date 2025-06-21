@@ -12,8 +12,9 @@
     "web": "npx expo start --web",
     "build": "npx expo export --platform web --output-dir dist",
     "fix-paths": "sed -i 's|src=\"/_expo/|src=\"./expo/|g' dist/index.html && mv dist/_expo dist/expo",
+    "add-telegram": "sed -i '/<\\/head>/i\\  <script src=\"https://telegram.org/js/telegram-web-app.js\"></script>' dist/index.html",
     "copy-nojekyll": "cp .nojekyll dist/",
-    "predeploy": "npm run build && npm run fix-paths && npm run copy-nojekyll",
+    "predeploy": "npm run build && npm run fix-paths && npm run add-telegram && npm run copy-nojekyll",
     "deploy": "rm -rf .gh-pages && gh-pages -d dist"
   },
   "dependencies": {
