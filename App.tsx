@@ -38,7 +38,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        🔢 TON Счётчик версия 3
+        🔢 TON Счётчик версия 8
       </Text>
 
       {/* TON Wallet Section */}
